@@ -18,134 +18,147 @@ import fr.adaming.entities.Produit;
 import fr.adaming.service.IAdminService;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/app")
 public class AdminController {
-	
+
 	@Autowired
 	private IAdminService adminService;
 
 	public void setAdminService(IAdminService adminService) {
 		this.adminService = adminService;
 	}
-	
-	
-	//========================Afficher Produits=========================================
-	
-	@RequestMapping(value= "/accueilAdmin", method = RequestMethod.GET)
-	public String accueil(ModelMap model){
-		
-//		List<Produit> listeProduit =adminService.getAllProduitService();
-//		model.addAttribute("listeProduit",listeProduit);
-		return "accueilAdmin";
+
+	//========================Gestion du logging=========================================
+
+	@RequestMapping("/loginURL")
+	public String pageLogin(){
+
+		return "login";
 	}
 	
-	
-	//========================Ajouter Produit=========================================
-		//Afficher formulaire
-		@RequestMapping(value = "/ajouterP", method = RequestMethod.GET)
-		public ModelAndView ajouterProduitFormulaire(){
-			return new ModelAndView("soumettreAjouterP", "produitForm", new Produit());
-		}
-		
-		//Soumettre formulaire
-		@RequestMapping(value = "/soumettreFormAjouterProduit", method = RequestMethod.POST)
-		public String soumettreFormulaireAjouter( Model model, @ModelAttribute("produitForm") Produit produit, BindingResult resultatValidation){
-			
+	@RequestMapping("/logoutURL")
+	public String pageLogout(){
 
-			//Vérification de la saisie correcte
-			if (resultatValidation.hasErrors()) {
-				//Rester sur la meme page
-				return "soumettreAjouterP";
-			} else {
-				//Appel de la méthode ajouter
-				adminService.ajouterProduitService(produit);
-				//MAJ de la liste
-				List<Produit> listeProduit = adminService.getAllProduitService();
-				model.addAttribute("listeProduit",listeProduit);
-				return "accueil";
-			}
-		}
-		
-		
-	//========================Supprimer Produit=========================================
-		//Afficher formulaire
-		@RequestMapping(value = "/supprimerP", method = RequestMethod.GET)
-		public String supprimerProduitFormulaire(){
-			return "soumettreSupprimerP";
-		}
-		
-		//Soumettre formulaire
-		@RequestMapping(value = "/soumettreFormSupprimerProduit", method = RequestMethod.GET)
-		public String soumettreFormulaireSupprimer(Model model, @RequestParam("id_param") int id){
-			adminService.supprimerProduitService(id);
-			
+		return "login";
+	}
+
+	//========================Afficher Produits=========================================
+
+	@RequestMapping(value= "/client/accueilAdmin", method = RequestMethod.GET)
+	public String accueil(ModelMap model){
+
+		List<Produit> listeProduit =adminService.getAllProduitService();
+		model.addAttribute("listeProduit",listeProduit);
+		return "accueilAdmin";
+	}
+
+
+	//========================Ajouter Produit=========================================
+	//Afficher formulaire
+	@RequestMapping(value = "/admin/ajouterP", method = RequestMethod.GET)
+	public ModelAndView ajouterProduitFormulaire(){
+		return new ModelAndView("soumettreAjouterP", "produitForm", new Produit());
+	}
+
+	//Soumettre formulaire
+	@RequestMapping(value = "/admin/soumettreFormAjouterProduit", method = RequestMethod.POST)
+	public String soumettreFormulaireAjouter( Model model, @ModelAttribute("produitForm") Produit produit, BindingResult resultatValidation){
+
+
+		//Vérification de la saisie correcte
+		if (resultatValidation.hasErrors()) {
+			//Rester sur la meme page
+			return "soumettreAjouterP";
+		} else {
+			//Appel de la méthode ajouter
+			adminService.ajouterProduitService(produit);
 			//MAJ de la liste
 			List<Produit> listeProduit = adminService.getAllProduitService();
 			model.addAttribute("listeProduit",listeProduit);
 			return "accueil";
 		}
-		
+	}
+
+
+	//========================Supprimer Produit=========================================
+	//Afficher formulaire
+	@RequestMapping(value = "/admin/supprimerP", method = RequestMethod.GET)
+	public String supprimerProduitFormulaire(){
+		return "soumettreSupprimerP";
+	}
+
+	//Soumettre formulaire
+	@RequestMapping(value = "/admin/soumettreFormSupprimerProduit", method = RequestMethod.GET)
+	public String soumettreFormulaireSupprimer(Model model, @RequestParam("id_param") int id){
+		adminService.supprimerProduitService(id);
+
+		//MAJ de la liste
+		List<Produit> listeProduit = adminService.getAllProduitService();
+		model.addAttribute("listeProduit",listeProduit);
+		return "accueil";
+	}
+
 	//========================Modifier Produit=========================================
-		//Afficher formulaire
-		@RequestMapping(value = "/modifierP", method = RequestMethod.GET)
-		public ModelAndView modifierEmployeFormulaire(){
-			return new ModelAndView("soumettreModifierP", "produitForm", new Produit());
-		}
-		
-		//Soumettre formulaire
-		@RequestMapping(value = "/soumettreFormModifierProduit", method = RequestMethod.POST)
-		public String soumettreFormulaireModifier(Model model, Produit produit, BindingResult resultatValidation){
-			
-			
+	//Afficher formulaire
+	@RequestMapping(value = "/admin/modifierP", method = RequestMethod.GET)
+	public ModelAndView modifierEmployeFormulaire(){
+		return new ModelAndView("soumettreModifierP", "produitForm", new Produit());
+	}
+
+	//Soumettre formulaire
+	@RequestMapping(value = "/admin/soumettreFormModifierProduit", method = RequestMethod.POST)
+	public String soumettreFormulaireModifier(Model model, Produit produit, BindingResult resultatValidation){
+
+
 		if (resultatValidation.hasErrors()) {
 			return "soumettreModifierP";
 		} else {
 			adminService.modifierProduitService(produit);
-			
+
 			//MAJ de la liste
 			List<Produit> listeProduit = adminService.getAllProduitService();
 			model.addAttribute("listeProduit",listeProduit);
 			return "accueil";
-			}
 		}
-		
-		
-		
-		
-		
-		//====================Ajouter Categorie=============================================
-		//Afficher formulaire
-		@RequestMapping(value = "/ajouterC", method = RequestMethod.GET)
-		public ModelAndView ajouterCategorieFormulaire(){
-			return new ModelAndView("soumettreAjouterC", "categorieForm", new Categorie());
-		}
-		
-		//Soumettre formulaire
-		@RequestMapping(value = "/soumettreFormAjouterCategorie", method = RequestMethod.POST)
-		public String soumettreFormulaireAjouterCategorie( Model model, @ModelAttribute("categorieForm") Categorie categorie, BindingResult resultatValidation){
-			
+	}
 
-			//Vérification de la saisie correcte
-			if (resultatValidation.hasErrors()) {
-				//Rester sur la meme page
-				return "soumettreAjouterP";
-			} else {
-				//Appel de la méthode ajouter
-				adminService.ajouterCategorieService(categorie);
-				//MAJ de la liste
-				List<Produit> listeProduit = adminService.getAllProduitService();
-				model.addAttribute("listeProduit",listeProduit);
-				return "accueil";
-			}
+
+
+
+
+	//====================Ajouter Categorie=============================================
+	//Afficher formulaire
+	@RequestMapping(value = "/superadmin/ajouterC", method = RequestMethod.GET)
+	public ModelAndView ajouterCategorieFormulaire(){
+		return new ModelAndView("soumettreAjouterC", "categorieForm", new Categorie());
+	}
+
+	//Soumettre formulaire
+	@RequestMapping(value = "/superadmin/soumettreFormAjouterCategorie", method = RequestMethod.POST)
+	public String soumettreFormulaireAjouterCategorie( Model model, @ModelAttribute("categorieForm") Categorie categorie, BindingResult resultatValidation){
+
+
+		//Vérification de la saisie correcte
+		if (resultatValidation.hasErrors()) {
+			//Rester sur la meme page
+			return "soumettreAjouterP";
+		} else {
+			//Appel de la méthode ajouter
+			adminService.ajouterCategorieService(categorie);
+			//MAJ de la liste
+			List<Produit> listeProduit = adminService.getAllProduitService();
+			model.addAttribute("listeProduit",listeProduit);
+			return "accueil";
 		}
-		
-		
-		
-		
-		
-		
-		
-	
+	}
+
+
+
+
+
+
+
+
 }
 
 
